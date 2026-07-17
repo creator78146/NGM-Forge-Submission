@@ -1,0 +1,31 @@
+import { useEffect, useRef } from 'react'
+
+export default function Modal({ title, children, onClose }) {
+  const overlayRef = useRef(null)
+
+  useEffect(() => {
+    const handleKey = (e) => {
+      if (e.key === 'Escape') onClose()
+    }
+    document.addEventListener('keydown', handleKey)
+    return () => document.removeEventListener('keydown', handleKey)
+  }, [onClose])
+
+  const handleOverlayClick = (e) => {
+    if (e.target === overlayRef.current) onClose()
+  }
+
+  return (
+    <div className="modal-overlay" ref={overlayRef} onMouseDown={handleOverlayClick}>
+      <div className="modal" role="dialog" aria-modal="true" aria-label={title}>
+        <div className="modal-header">
+          <h2>{title}</h2>
+          <button className="icon-btn" onClick={onClose} aria-label="Close">
+            ✕
+          </button>
+        </div>
+        <div className="modal-body">{children}</div>
+      </div>
+    </div>
+  )
+}
